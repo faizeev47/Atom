@@ -1,4 +1,4 @@
-# MindReader
+# Atom
 ### Read some stuff
 ### Figure the math
 ### Work it out
