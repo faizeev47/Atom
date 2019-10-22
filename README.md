@@ -1,5 +1,2 @@
-# Atom
-### Read some stuff
-### Figure the math
-### Work it out
-### Get it on paper
+# Atom 
+## Cognitive Training using an Electroencephalography (EEG) based Brain-Computer Interface
