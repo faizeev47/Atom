@@ -1,2 +1,1 @@
-# Documentation for the Final Year Project
-## Atom - Brain-Compter Interfacing
+# Documentation for the Project
