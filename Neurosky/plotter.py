@@ -38,7 +38,7 @@ fig, ax = plt.subplots()
 
 x = np.arange(0, 2*np.pi, 0.01)
 print(f"Numbers in x: {len(x)}")
-line1, = ax.plot(x, np.sin(x))
+line1, = ax.plot(x, np.sin(x), label="Hello")
 line2, = ax.plot(x, np.sin(x))
 
 def init():
@@ -51,7 +51,6 @@ def animate(i):
     y2 = np.sin(x - i / 100)
     line1.set_ydata(y1)
     line2.set_ydata(y2)
-    print(f"i: {i}, len(y1): {len(y1)}, y1[0:10]: {y1[0:10]}")
     return line1, line2
 
 ani = FuncAnimation(
@@ -62,4 +61,5 @@ ani = FuncAnimation(
         blit=True,
         save_count=50)
 
+plt.legend(loc="upper left")
 plt.show()
