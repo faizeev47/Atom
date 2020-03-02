@@ -48,7 +48,8 @@
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_image" />
+        app:layout_constraintTop_toBottomOf="@+id/login_image"
+        android:nextFocusForward="@id/login_password"/>
 
     <TextView
         android:id="@+id/login_email_error"
@@ -76,7 +77,8 @@
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_email_error" />
+        app:layout_constraintTop_toBottomOf="@+id/login_email_error"
+        android:nextFocusForward="@id/login_sign_in_button"/>
 
     <TextView
         android:id="@+id/login_password_error"

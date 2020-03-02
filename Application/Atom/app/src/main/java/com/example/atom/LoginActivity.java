@@ -1,9 +1,5 @@
 package com.example.atom;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,6 +11,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -28,8 +28,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import static com.example.atom.Helpers.isEmailValid;
-import static com.example.atom.Helpers.passwordIsLong;
+import static com.example.atom.Utils.connectionActive;
+import static com.example.atom.Utils.hideKeyboard;
+import static com.example.atom.Utils.isEmailValid;
+import static com.example.atom.Utils.passwordIsLong;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String LOG_TAG = LoginActivity.class.getSimpleName() + "LOG";
@@ -41,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button mLoginButton;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
-    private ProgressBar mLoader;
+    private ProgressBar mLoadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mEmailEditText = findViewById(R.id.login_email);
         mPasswordEditText = findViewById(R.id.login_password);
-        mLoader = findViewById(R.id.login_loading);
+        mLoadingBar = findViewById(R.id.login_loading);
         mLoginButton = findViewById(R.id.login_sign_in_button);
 
         final TextView emailError = findViewById(R.id.login_email_error);
@@ -91,10 +93,17 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void signInWithEmail(View view) {
-        mLoader.setVisibility(ProgressBar.VISIBLE);
+        mLoadingBar.setVisibility(ProgressBar.VISIBLE);
+        hideKeyboard(this, view);
+        if (!connectionActive(this)) {
+            Toast.makeText(this, getString(R.string.no_internet_error), Toast.LENGTH_SHORT).show();
+            mLoadingBar.setVisibility(ProgressBar.GONE);
+            return;
+        }
+        final TextView loginError = findViewById(R.id.login_error);
+
         String email = mEmailEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
-        final TextView loginError = findViewById(R.id.login_error);
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -103,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (!user.isEmailVerified()) {
                                 Log.d(LOG_TAG, "signInWithEmail: failure");
-                                loginError.setText("Verify your email first!");
+                                loginError.setText(R.string.email_verification_error);
 
                             } else {
                                 Log.d(LOG_TAG, "signInWithEmail: success");
@@ -114,16 +123,21 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             Log.d(LOG_TAG, "signInWithEmail: failure");
                             loginError.setText(R.string.authentication_failed_error);
-                            mLoader.setVisibility(ProgressBar.GONE);
+                            mLoadingBar.setVisibility(ProgressBar.GONE);
                         }
                     }
                 });
     }
 
     public void signInWithGoogle() {
-        Log.d(LOG_TAG, "Fired");
+        if (!connectionActive(this)) {
+            Toast.makeText(this, getString(R.string.no_internet_error), Toast.LENGTH_SHORT).show();
+            mLoadingBar.setVisibility(ProgressBar.GONE);
+            return;
+        }
         Intent intent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(intent, RC_GOOGLE_SIGN_IN);
+
     }
 
     @Override
@@ -150,6 +164,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void openRegistration(View view) {
+        if (!connectionActive(this)) {
+            Toast.makeText(this, getString(R.string.no_internet_error), Toast.LENGTH_SHORT).show();
+            mLoadingBar.setVisibility(ProgressBar.GONE);
+            return;
+        }
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }

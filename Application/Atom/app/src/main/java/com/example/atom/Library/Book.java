@@ -5,8 +5,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.Date;
 
 @Entity(tableName = "library")
@@ -44,4 +42,10 @@ public class Book {
     public void setName(String name) { this.mName = name; }
     public void setPageNumber(int pageNumber) { this.mPageNumber = pageNumber; }
     public void setLastOpened(Date lastOpened) { this.mLastOpened = lastOpened; }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return getName() +" " + getPageNumber() + " " + getUri();
+    }
 }

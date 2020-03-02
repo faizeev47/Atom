@@ -1,8 +1,5 @@
 package com.example.atom;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,11 +11,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-import static com.example.atom.Helpers.isEmailValid;
+import static com.example.atom.Utils.isEmailValid;
 
 public class PasswordRecoverActivity extends AppCompatActivity {
     private static final String LOG_TAG = LoginActivity.class.getSimpleName() + "LOG";

@@ -2,7 +2,6 @@ package com.example.atom.Library;
 
 import android.content.Context;
 import android.content.Intent;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.atom.BookActivity;
+import com.example.atom.ConnectionActivity;
 import com.example.atom.R;
 import com.example.atom.ReaderActivity;
 
@@ -22,10 +22,12 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.BookVi
     private static final String LOG_TAG = BookActivity.class.getSimpleName() + "LOGGING";
 
     private Context mContext;
+    private boolean mConnected;
     private final LayoutInflater mInflater;
     private List<Book> mBooks;
 
-    public BookListAdapter(Context context) {
+    public BookListAdapter(Context context, boolean headsetConnected) {
+        mConnected = headsetConnected;
         mContext = context;
         mInflater = LayoutInflater.from(context); }
 
@@ -47,6 +49,10 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.BookVi
                 intent.putExtra(BookActivity.EXTRA_BOOK_URI, current.getUri());
                 intent.putExtra(BookActivity.EXTRA_BOOK_NAME, current.getName());
                 intent.putExtra(BookActivity.EXTRA_BOOK_PAGE_NUMBER, current.getPageNumber());
+
+                if (mConnected) {
+                    intent.putExtra(ConnectionActivity.EXTRA_CONNECTION_STATUS, "Connected");
+                }
                 Log.d(LOG_TAG, current.getName() + ": @ " + current.getPageNumber());
                 mContext.startActivity(intent);
             }

@@ -1,8 +1,5 @@
 package com.example.atom;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,15 +10,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import static com.example.atom.Utils.connectionActive;
 
 public class AccountActivity extends AppCompatActivity {
     private static final String LOG_TAG = LoginActivity.class.getSimpleName() + "LOG";
@@ -37,7 +38,7 @@ public class AccountActivity extends AppCompatActivity {
     private String mName;
     private String mEmail;
 
-    private ProgressBar mLoader;
+    private ProgressBar mLoadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class AccountActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
 
-        mLoader = findViewById(R.id.account_loading);
+        mLoadingBar = findViewById(R.id.account_loading);
 
         TextView nameTextView = findViewById(R.id.account_name);
         TextView emailTextView = findViewById(R.id.account_email);
@@ -80,13 +81,17 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     public void navigateBack(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
         finish();
     }
 
     public void changePassword(View view) {
-        mLoader.setVisibility(ProgressBar.VISIBLE);
+        mLoadingBar.setVisibility(ProgressBar.VISIBLE);
+
+        if (!connectionActive(this)) {
+            Toast.makeText(this, getString(R.string.no_internet_error), Toast.LENGTH_SHORT).show();
+            mLoadingBar.setVisibility(ProgressBar.GONE);
+            return;
+        }
         mFirebaseAuth.sendPasswordResetEmail(mFirebaseAccount.getEmail())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -94,12 +99,11 @@ public class AccountActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d(LOG_TAG, "sendPasswordResetEmail: success");
                             Toast.makeText(AccountActivity.this, "We've sent a email containing the password reset instructions to you. You can reset the password from there. Thank you!", Toast.LENGTH_LONG).show();
-                            mFirebaseAuth.signOut();
                         } else {
                             Log.d(LOG_TAG, "sendPasswordResetEmail: failure");
                             Toast.makeText(AccountActivity.this, "Password change failed! Please try again later.", Toast.LENGTH_LONG).show();
                         }
-                        mLoader.setVisibility(ProgressBar.GONE);
+                        mLoadingBar.setVisibility(ProgressBar.GONE);
                     }
                 });
     }

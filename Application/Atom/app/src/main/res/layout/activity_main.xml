@@ -38,17 +38,19 @@
 
     <Button
         android:id="@+id/main_progress_button"
+        style="@style/button_long"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_progress"
-        style="@style/button_long" />
+        android:onClick="openProgress"
+        android:text="@string/button_progress" />
 
     <Button
         android:id="@+id/main_headset_button"
+        style="@style/button_long"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_headset"
-        style="@style/button_long" />
+        android:onClick="openConnection"
+        android:text="@string/button_headset" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -66,14 +68,26 @@
             app:srcCompat="@drawable/ic_headset" />
 
         <TextView
-            android:id="@+id/main_headset_status"
+            android:id="@+id/main_headset_status_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/example_connection_status"
-            android:textColor="@color/success"
+            android:layout_marginStart="8dp"
+            android:text="@string/status_label"
             app:layout_constraintBottom_toBottomOf="@+id/main_headset_image"
             app:layout_constraintStart_toEndOf="@+id/main_headset_image"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/main_headset_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/example_connection_status"
+            android:textColor="@color/success"
+            app:layout_constraintBottom_toBottomOf="@+id/main_headset_image"
+            app:layout_constraintStart_toEndOf="@+id/main_headset_status_label"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.545" />
 
         <ImageButton
             android:id="@+id/main_books"
@@ -84,10 +98,10 @@
             android:src="@drawable/ic_book"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/main_headset_status" />
+            app:layout_constraintTop_toBottomOf="@+id/main_headset_status_label" />
 
         <ImageButton
-            android:id="@+id/main_books2"
+            android:id="@+id/main_games"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_game"
@@ -111,7 +125,7 @@
             app:layout_constraintTop_toBottomOf="@+id/main_books" />
 
         <TextView
-            android:id="@+id/main_books_label2"
+            android:id="@+id/main_games_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -121,7 +135,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/main_books2" />
+            app:layout_constraintTop_toBottomOf="@+id/main_games" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

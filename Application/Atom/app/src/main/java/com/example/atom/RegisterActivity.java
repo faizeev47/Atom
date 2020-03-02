@@ -1,9 +1,5 @@
 package com.example.atom;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +11,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -22,11 +21,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-import org.w3c.dom.Text;
-
-import static com.example.atom.Helpers.containsSpecial;
-import static com.example.atom.Helpers.isEmailValid;
-import static com.example.atom.Helpers.passwordIsLong;
+import static com.example.atom.Utils.connectionActive;
+import static com.example.atom.Utils.containsSpecial;
+import static com.example.atom.Utils.isEmailValid;
+import static com.example.atom.Utils.passwordIsLong;
 
 public class RegisterActivity extends AppCompatActivity {
     private static final String LOG_TAG = LoginActivity.class.getSimpleName() + "LOG";
@@ -86,6 +84,13 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void createNewUser(View view) {
         mLoadingBar.setVisibility(ProgressBar.VISIBLE);
+
+        if (!connectionActive(this)) {
+            Toast.makeText(this, getString(R.string.no_internet_error), Toast.LENGTH_SHORT).show();
+            mLoadingBar.setVisibility(ProgressBar.GONE);
+            return;
+        }
+
         String email = mEmailEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
 
