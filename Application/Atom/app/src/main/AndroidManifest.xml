@@ -15,11 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ProgressActivity"></activity>
+        <activity android:name=".QuestionActivity"
+            android:theme="@style/AppTheme.Dialog"/>
+        <activity android:name=".ProgressActivity" />
         <activity android:name=".ConnectionActivity" />
 
         <service
-            android:name=".SocketService"
+            android:name=".Headset.SocketService"
             android:enabled="true"
             android:exported="true" />
 
@@ -47,6 +49,27 @@
             android:name=".RegisterActivity"
             android:parentActivityName=".LoginActivity" />
         <activity android:name=".MainActivity" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

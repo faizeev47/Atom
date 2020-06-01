@@ -2,7 +2,8 @@ package com.example.atom;
 
 import org.junit.Test;
 
-import static com.example.atom.Helpers.formatFileName;
+import static com.example.atom.Utilities.Utils.formatFileName;
+import static com.example.atom.Utilities.Utils.getFormattedTime;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -32,6 +33,18 @@ public class ExampleUnitTest {
     public void filenameFormatter_removesUnderscore() {
         String formattedName = formatFileName("deckard_shaw");
         assertEquals("Deckard Shaw", formattedName);
+    }
+
+    @Test
+    public void getFormattedTime_correctSeconds() {
+        String formattedTime = getFormattedTime(10);
+        assertEquals("00:00:10", formattedTime);
+
+        formattedTime = getFormattedTime(84);
+        assertEquals("00:01:24", formattedTime);
+
+        formattedTime = getFormattedTime(3684);
+        assertEquals("01:01:24", formattedTime);
     }
 
 }

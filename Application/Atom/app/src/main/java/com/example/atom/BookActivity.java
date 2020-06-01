@@ -8,16 +8,18 @@ import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.atom.Headset.IntentFilterFactory;
+import com.example.atom.Headset.StandardHeadsetReceiver;
 import com.example.atom.Library.Book;
 import com.example.atom.Library.BookListAdapter;
 import com.example.atom.Library.BookViewModel;
@@ -26,7 +28,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
-import static com.example.atom.Utils.formatFileName;
+import static com.example.atom.Utilities.Utils.formatFileName;
 
 public class BookActivity extends AppCompatActivity {
     public static final String EXTRA_BOOK_URI = BookActivity.class.getCanonicalName() + "EXTRA_BOOK_URI";
@@ -38,14 +40,17 @@ public class BookActivity extends AppCompatActivity {
     private static final int PICK_BOOK_FILE = 0;
 
     private BookViewModel mBookViewModel;
-    private View mainView;
+    private View mMainView  ;
+
+    private LocalBroadcastManager mLocalBroadcastManager;
+    private StandardHeadsetReceiver mStandardReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book);
 
-        mainView = findViewById(R.id.book_view);
+        mMainView = findViewById(R.id.book_view);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +88,9 @@ public class BookActivity extends AppCompatActivity {
                         int position = viewHolder.getAdapterPosition();
                         final Book bookToDel = adapter.getBookAtPosition(position);
                         mBookViewModel.deleteBook(bookToDel);
-                        Snackbar undoSnackbar = Snackbar.make(mainView, "Cleared " + bookToDel.getName() + " from your library!", Snackbar.LENGTH_LONG);
+                        Snackbar undoSnackbar = Snackbar.
+                                make(mMainView, "Cleared " + bookToDel.getName() + " from your library!",
+                                        Snackbar.LENGTH_LONG);
                         undoSnackbar.setAction("Undo", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -97,6 +104,18 @@ public class BookActivity extends AppCompatActivity {
 
         touchHelper.attachToRecyclerView(recyclerView);
 
+
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
+        mStandardReceiver = new StandardHeadsetReceiver(LOG_TAG, mMainView);
+        mLocalBroadcastManager.registerReceiver(mStandardReceiver,
+                IntentFilterFactory.createStandardFilter());
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mLocalBroadcastManager.unregisterReceiver(mStandardReceiver);
     }
 
     @Override
@@ -136,7 +155,9 @@ public class BookActivity extends AppCompatActivity {
 
     public boolean isValidDocument(Uri docUri) {
         if (!DocumentsContract.isDocumentUri(this, docUri)) {
-            Toast.makeText(this, "File is not a document file!", Toast.LENGTH_SHORT).show();
+            Snackbar.make(mMainView,
+                    "File is not a document file!",
+                    Snackbar.LENGTH_LONG).show();
             return false;
         }
         Cursor cursor = getContentResolver().query(
@@ -151,7 +172,9 @@ public class BookActivity extends AppCompatActivity {
         cursor.close();
 
         if ((flags & DocumentsContract.Document.FLAG_VIRTUAL_DOCUMENT) != 0) {
-            Toast.makeText(this, "File is a virtual file!", Toast.LENGTH_SHORT).show();
+            Snackbar.make(mMainView,
+                    "File is not a document file!",
+                    Snackbar.LENGTH_LONG).show();
             return false;
         } else {
             return true;
@@ -161,7 +184,7 @@ public class BookActivity extends AppCompatActivity {
     public void clearAll(View view) {
         mBookViewModel.deleteAll();
         final List<Book> books = mBookViewModel.getAllBooks().getValue();
-        Snackbar undoSnackbar = Snackbar.make(mainView, "Cleared your library!", Snackbar.LENGTH_LONG);
+        Snackbar undoSnackbar = Snackbar.make(mMainView, "Cleared your library!", Snackbar.LENGTH_LONG);
         undoSnackbar.setAction("Undo", new View.OnClickListener() {
             @Override
             public void onClick(View v) {

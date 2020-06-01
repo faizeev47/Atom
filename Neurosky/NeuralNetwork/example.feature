@@ -1,0 +1,1 @@
+ {"eSense":{"attention":0,"meditation":0},"eegPower":{"delta":209826,"theta":622578,"lowAlpha":196851,"highAlpha":192614,"lowBeta":95075,"highBeta":240699,"lowGamma":85885,"highGamma":794493},"poorSignalLevel":51}

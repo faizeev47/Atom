@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <fraction name="opacity_error">0.6</fraction>
+
+    <integer-array name="pie_colors">
+        <item>-94977465</item>
+        <item>-87919033</item>
+        <item>-87636397</item>
+        <item>-94207797</item>
+        <item>-94087225</item>
+        <item>-87334255</item>
+        <item>-92394904</item>
+        <item>-94920249</item>
+        <item>-96656364</item>
+        <item>-87928761</item>
+        <item>-98097809</item>
+        <item>-96725179</item>
+        <item>-100005089</item>
+        <item>-98812332</item>
+        <item>-97430500</item>
+        <item>-91146448</item>
+        <item>-97679790</item>
+        <item>-90868686</item>
+        <item>-94475319</item>
+        <item>-89891896</item>
+        <item>-87184278</item>
+        <item>-97480393</item>
+        <item>-99013299</item>
+        <item>-95865320</item>
+
+    </integer-array>
 </resources>

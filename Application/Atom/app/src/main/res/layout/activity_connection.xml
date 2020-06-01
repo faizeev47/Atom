@@ -2,20 +2,21 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/connect_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorSecondary"
     tools:context=".ConnectionActivity">
 
     <LinearLayout
-        android:id="@+id/connection_linearLayout"
+        android:id="@+id/connect_linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/connection_back"
+            android:id="@+id/connect_back"
             style="@style/button_action_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,17 +36,42 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/connection_linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/connect_linearLayout" />
+
+    <TextView
+        android:id="@+id/connect_status_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/device_status_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/connect_subheading" />
+
+    <TextView
+        android:id="@+id/connect_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="@string/status_disconnected"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+        android:textColor="@color/warning"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/connect_status_label" />
 
     <Button
         android:id="@+id/connect_connect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:background="@drawable/button_normal"
+        android:background="@drawable/btn_normal"
         android:onClick="connect"
         android:text="@string/action_connect"
-        android:textColor="@drawable/button_normal"
+        android:textColor="@drawable/btn_normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,35 +82,37 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:background="@drawable/button_normal"
+        android:background="@drawable/btn_normal"
         android:onClick="disconnect"
         android:text="@string/action_disconnect"
-        android:textColor="@drawable/button_normal"
+        android:textColor="@drawable/btn_normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/connect_connect" />
 
     <TextView
-        android:id="@+id/connect_status"
+        android:id="@+id/connect_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/colorSecondaryDark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/connect_subheading" />
+        app:layout_constraintTop_toBottomOf="@+id/connect_disconnect" />
 
     <ProgressBar
         android:id="@+id/connect_loadingBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/connect_disconnect" />
+        app:layout_constraintTop_toBottomOf="@+id/connect_state" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,7 +14,34 @@
     <color name="button_long_pressed">#27648D</color>
 
     <color name="success">#27ae60</color>
-    <color name="warning">#c0392b</color>
+    <color name="warning">#972D22</color>
 
     <color name="transparent">#80000000</color>
+
+    <array name="pie_color">
+        <item>#6F56C247</item>
+        <item>#6FC27647</item>
+        <item>#6FC6C653</item>
+        <item>#6F6280CB</item>
+        <item>#6F6457C7</item>
+        <item>#6FCB6291</item>
+        <item>#6F7E2A68</item>
+        <item>#6F57A1C7</item>
+        <item>#6F3D2414</item>
+        <item>#6FC25047</item>
+        <item>#6F27256F</item>
+        <item>#6F3C1745</item>
+        <item>#6F0A0B1F</item>
+        <item>#6F1C3E54</item>
+        <item>#6F31541C</item>
+        <item>#6F913730</item>
+        <item>#6F2D8652</item>
+        <item>#6F957432</item>
+        <item>#6F5E6BC9</item>
+        <item>#6FA45BC8</item>
+        <item>#6FCDAC6A</item>
+        <item>#6F309137</item>
+        <item>#6F192D4D</item>
+        <item>#6F493618</item>
+    </array>
 </resources>

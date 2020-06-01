@@ -9,25 +9,33 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.atom.Headset.IntentFilterFactory;
+import com.example.atom.Headset.StandardHeadsetReceiver;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
-import static com.example.atom.Utils.isEmailValid;
+import static com.example.atom.Utilities.Utils.isEmailValid;
 
 public class PasswordRecoverActivity extends AppCompatActivity {
     private static final String LOG_TAG = LoginActivity.class.getSimpleName() + "LOG";
 
     private FirebaseAuth mAuth;
 
+    private View mMainView;
     private Button mRecoverButton;
     private EditText mEmailEditText;
     private ProgressBar mRecoverLoader;
+
+    private LocalBroadcastManager mLocalBroadcastManager;
+    private StandardHeadsetReceiver mStandardReceiver;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +44,7 @@ public class PasswordRecoverActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        mMainView = findViewById(R.id.recover_view);
         mRecoverButton = findViewById(R.id.recover_recover_button);
         mEmailEditText = findViewById(R.id.recover_email);
         mRecoverLoader = findViewById(R.id.recover_loading);
@@ -54,6 +63,16 @@ public class PasswordRecoverActivity extends AppCompatActivity {
             }
         });
 
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
+        mStandardReceiver = new StandardHeadsetReceiver(LOG_TAG, mMainView);
+        mLocalBroadcastManager.registerReceiver(mStandardReceiver,
+                IntentFilterFactory.createStandardFilter());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mLocalBroadcastManager.unregisterReceiver(mStandardReceiver);
     }
 
     public void navigateBack(View view) {
@@ -85,7 +104,9 @@ public class PasswordRecoverActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Log.d(LOG_TAG, "sendPasswordResetEmail: success");
-                            Toast.makeText(PasswordRecoverActivity.this, "A password reset email has been sent to your provided email!", Toast.LENGTH_LONG).show();
+                            Snackbar.make(mMainView,
+                                    "A password reset email has been sent to your provided email!",
+                                    Snackbar.LENGTH_LONG).show();
                             finish();
                         }
                         else {

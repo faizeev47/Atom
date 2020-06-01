@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,58 +12,76 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.example.atom.Headset.HeadsetState;
+import com.example.atom.Headset.IntentFilterFactory;
+import com.example.atom.Headset.ServiceAction;
+import com.example.atom.Headset.SocketService;
+import com.example.atom.Headset.StandardHeadsetReceiver;
+import com.example.atom.Utilities.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.TimeZone;
 
 import static com.example.atom.ConnectionActivity.EXTRA_CONNECTION_STATUS;
 
 public class MainActivity extends AppCompatActivity {
-
     private static final String LOG_TAG = MainActivity.class.getSimpleName() + " Logging";
-    private static final String LOG_TAG_SOCKET = "Web Socket Event";
-    private FirebaseAuth mAuth;
 
-    private TextView mUser;
+    private View mMainView;
     private TextView mHeadsetStatus;
 
-    private boolean mConnected;
+    private HeadsetState mHeadsetState;
     private LocalBroadcastManager mLocalBroadcastManager;
-    SocketReceiver mSocketReceiver = new SocketReceiver();
+    private SocketReceiver mSocketReceiver = new SocketReceiver();
+    private StandardHeadsetReceiver mStandardReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Require user to be logged in
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        TextView welcomeUser = findViewById(R.id.main_user);
+        if (currentUser == null) {
+            // Otherwise redirect to login
+            Utils.redirectToLogin(MainActivity.this, this);
+        } else {
+            String helloString = "Hi there, " + currentUser.getDisplayName().split(" ")[0] + "!";
+            welcomeUser.setText(helloString);
+        }
+
         mHeadsetStatus = findViewById(R.id.main_headset_status);
+        mMainView = findViewById(R.id.main_view);
+
+        mHeadsetState = HeadsetState.DISCONNECTED;
 
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(SocketService.ACTION_CONNECTED);
-        intentFilter.addAction(SocketService.ACTION_DISCONNECTED);
-        intentFilter.addAction(SocketService.ACTION_SEND_MESSAGE);
-        mLocalBroadcastManager.registerReceiver(mSocketReceiver, intentFilter);
-        updateUIOnConnection();
+        mStandardReceiver = new StandardHeadsetReceiver(LOG_TAG, mMainView);
 
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        mUser = findViewById(R.id.main_user);
-        if (currentUser != null) {
-            String helloString = "Hi there, " + currentUser.getDisplayName().split(" ")[0] + "!";
-            mUser.setText(helloString);
-            return;
-        }
-        GoogleSignInAccount googleAccount = GoogleSignIn.getLastSignedInAccount(this);
-        if (googleAccount != null) {
-            String helloString = "Hi there, " + googleAccount.getDisplayName().split(" ")[0] + "!";
-            mUser.setText(helloString);
-            return;
-        }
-        Intent redirectLoginIntent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(redirectLoginIntent);
-        finish();
+        mLocalBroadcastManager.registerReceiver(mSocketReceiver,
+                IntentFilterFactory.createFilter(ServiceAction.STATUS_UPDATE));
+        mLocalBroadcastManager.sendBroadcast(new Intent(SocketService.ACTION_GET_CONNECTION_STATUS));
+
+        mLocalBroadcastManager.registerReceiver(mStandardReceiver,
+                IntentFilterFactory.createStandardFilter());
+
+        updateUIOnConnection();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mLocalBroadcastManager.sendBroadcast(new Intent(SocketService.ACTION_GET_CONNECTION_STATUS));
+    }
+
+    @Override
+    protected void onDestroy() {
+        mLocalBroadcastManager.unregisterReceiver(mSocketReceiver);
+        mLocalBroadcastManager.unregisterReceiver(mStandardReceiver);
+        super.onDestroy();
     }
 
     public void openAccount(View view) {
@@ -74,9 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void openBooks(View view) {
         Intent intent = new Intent(this, BookActivity.class);
-        if (mConnected) {
-            intent.putExtra(EXTRA_CONNECTION_STATUS, "CONNECTED");
-        }
         startActivity(intent);
     }
 
@@ -92,37 +106,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUIOnConnection() {
-        mHeadsetStatus.setText(mConnected ? "Connected" : "Disconnected");
-        mHeadsetStatus.setTextColor(mConnected ? getColor(R.color.success) : getColor(R.color.warning));
+        if (mHeadsetState == HeadsetState.CONNECTED) {
+            mHeadsetStatus.setText(getString(R.string.status_connected));
+            mHeadsetStatus.setTextColor(getColor(R.color.success));
+        } else {
+            mHeadsetStatus.setText(getString(R.string.status_disconnected));
+            mHeadsetStatus.setTextColor(getColor(R.color.warning));
+        }
     }
 
-    @Override
-    protected void onDestroy() {
-        mLocalBroadcastManager.unregisterReceiver(mSocketReceiver);
-        super.onDestroy();
-    }
-
-
-
-    public class SocketReceiver extends BroadcastReceiver {
+    private class SocketReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             String intentAction = intent.getAction();
-            if (intentAction != null) {
-                switch (intentAction) {
-                    case SocketService.ACTION_SEND_MESSAGE:
-                    case SocketService.ACTION_CONNECTED:
-                        mConnected = true;
-                        break;
-                    case SocketService.ACTION_DISCONNECTED:
-                        mConnected = false;
-                        mLocalBroadcastManager.unregisterReceiver(mSocketReceiver);
-                        break;
-                    default:
-                        break;
+            if (intentAction != null && intentAction.equals(SocketService.ACTION_RETURN_CONNECTION_STATUS)) {
+                String status = intent.getStringExtra(SocketService.EXTRA_STATUS);
+                if (status.equals("connected")) {
+                    mHeadsetState = HeadsetState.CONNECTED;
+                } else {
+                    mHeadsetState = HeadsetState.DISCONNECTED;
                 }
-
                 updateUIOnConnection();
             }
         }

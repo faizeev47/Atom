@@ -1,0 +1,63 @@
+﻿7
+1 8
+#Name?Which of the following names is in the book up till now?
+:Oscar
+:John
+:Angela
+#Names?Which of the following names is in the book up till now?
+:Rosita
+:Roger
+:Phillipa
+#Action?What was Oscar doing to Philippa?
+:Oscar was hitting Philippa?
+:Oscar was charming Philippa?
+:Oscar was watching Philippa?
+#Action?What was Philippa doing when Oscar was watching her last?
+:Philippa was dancing
+:Philippa was singing
+:Philippa was playing piano
+#Action?What was Oscar doing while watching Philippa play last?
+:Oscar was jumping
+:Oscar was running
+:Oscar was playing piano
+#Action?What was Oscar's fullname?
+:Oscar Rodriguez
+:Oscar Wilde
+:Oscar denning
+#Name?Which of the following names is in the book up till now?
+:Mr. Jonathan
+:Mr. Fatima
+:Mr. Kettersby
+#Relation?What was Mr. Kettersby's relation to Oscar?
+:Father
+:Sister
+:Teacher
+2 3
+#Profession?What was the last mentioned profession of Oscar?
+:Caterer
+:Concierge
+:Dogsbody
+#Name?Which of the following names is in the book up till now?
+:Mrs. Ali
+:Mrs. Mars
+:Mrs. Denning
+#Profession?What was the last mentioned workplace of Philippa?
+:a post office
+:a pub
+:a school
+3 
+#Name?Which of the following names is in the book up till now?
+:John Alexander
+:Micheal Fishings
+:Jeremy Paxman
+#Name?Which of the following names is in the book up till now?
+:Roger Fienman
+:Carl Freiderich
+:Susanna Brury
+#Name?Which of the following names is in the book up till now?
+:Alex Freidman
+:Xi Jinping
+:Jung Ho
+#Name?Which of the following names is in the book up till now?
+:Kim Jong-il
+:

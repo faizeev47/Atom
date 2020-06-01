@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/layout_marker"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:padding="7dp"
+    android:gravity="center_horizontal"
+    android:alpha="0.8"
+    android:background="@drawable/dialog_frame"
+    android:backgroundTint="@color/colorTertiary"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/marker_session_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/backDark"
+        android:text="@string/sample_session_no"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        android:foreground="@color/backDark"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/marker_content_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/marker_score_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/score_label"
+            android:textColor="@color/backDark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/marker_session_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sample_float_value"
+            android:textColor="@color/colorSecondaryDark"
+            app:layout_constraintLeft_toRightOf="@id/marker_score_label"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/marker_time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_label"
+            android:textColor="@color/backDark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/marker_score_label" />
+
+        <TextView
+            android:id="@+id/marker_session_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sample_time_value"
+            android:textColor="@color/colorSecondaryDark"
+            app:layout_constraintStart_toEndOf="@+id/marker_score_label"
+            app:layout_constraintTop_toBottomOf="@+id/marker_session_score" />
+
+        <TextView
+            android:id="@+id/marker_date_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/on_label"
+            android:textColor="@color/backDark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/marker_time_label" />
+
+        <TextView
+            android:id="@+id/marker_session_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sample_date"
+            android:textColor="@color/colorSecondaryDark"
+            app:layout_constraintStart_toStartOf="@+id/marker_session_time"
+            app:layout_constraintTop_toBottomOf="@+id/marker_session_time" />
+
+        <TextView
+            android:id="@+id/marker_timestamp_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/at_label"
+            android:textColor="@color/backDark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/marker_date_label" />
+
+        <TextView
+            android:id="@+id/marker_session_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sample_timestamp"
+            android:textColor="@color/colorSecondaryDark"
+            app:layout_constraintStart_toStartOf="@+id/marker_session_date"
+            app:layout_constraintTop_toBottomOf="@+id/marker_session_date" />
+
+        <TextView
+            android:id="@+id/marker_book_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/book_label"
+            android:textColor="@color/backDark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/marker_timestamp_label" />
+
+        <TextView
+            android:id="@+id/marker_session_book"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sample_shortened_book_name"
+            android:textColor="@color/colorSecondaryDark"
+            app:layout_constraintStart_toStartOf="@+id/marker_session_timestamp"
+            app:layout_constraintTop_toBottomOf="@+id/marker_session_timestamp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+</LinearLayout>

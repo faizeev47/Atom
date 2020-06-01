@@ -9,28 +9,32 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.atom.Headset.IntentFilterFactory;
+import com.example.atom.Headset.StandardHeadsetReceiver;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-import static com.example.atom.Utils.connectionActive;
-import static com.example.atom.Utils.containsSpecial;
-import static com.example.atom.Utils.isEmailValid;
-import static com.example.atom.Utils.passwordIsLong;
+import static com.example.atom.Utilities.Utils.connectionActive;
+import static com.example.atom.Utilities.Utils.containsSpecial;
+import static com.example.atom.Utilities.Utils.isEmailValid;
+import static com.example.atom.Utilities.Utils.passwordIsLong;
 
 public class RegisterActivity extends AppCompatActivity {
     private static final String LOG_TAG = LoginActivity.class.getSimpleName() + "LOG";
 
     private FirebaseAuth mAuth;
 
+    private View mMainView;
     private Button mRegisterButton;
     private EditText mFullnameEditText;
     private EditText mEmailEditText;
@@ -38,7 +42,10 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText mConfirmationEditText;
     private ProgressBar mLoadingBar;
 
-    boolean admissibleRegistration;
+    boolean mAdmissibleRegistration;
+
+    private LocalBroadcastManager mLocalBroadcastManager;
+    private StandardHeadsetReceiver mStandardReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +54,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        // Initialize UI components
+        mMainView = findViewById(R.id.register_view);
         mRegisterButton = findViewById(R.id.register_register_button);
         mLoadingBar = findViewById(R.id.register_loading);
-
         mFullnameEditText = findViewById(R.id.register_fullname);
         mEmailEditText = findViewById(R.id.register_email);
         mPasswordEditText = findViewById(R.id.register_password);
@@ -80,13 +88,27 @@ public class RegisterActivity extends AppCompatActivity {
         mEmailEditText.addTextChangedListener(registerButtonEnabler);
         mPasswordEditText.addTextChangedListener(registerButtonEnabler);
         mConfirmationEditText.addTextChangedListener(registerButtonEnabler);
+
+
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
+        mStandardReceiver = new StandardHeadsetReceiver(LOG_TAG, mMainView);
+        mLocalBroadcastManager.registerReceiver(mStandardReceiver,
+                IntentFilterFactory.createStandardFilter());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mLocalBroadcastManager.unregisterReceiver(mStandardReceiver);
     }
 
     public void createNewUser(View view) {
         mLoadingBar.setVisibility(ProgressBar.VISIBLE);
 
         if (!connectionActive(this)) {
-            Toast.makeText(this, getString(R.string.no_internet_error), Toast.LENGTH_SHORT).show();
+            Snackbar.make(mMainView,
+                    R.string.no_internet_error,
+                    Snackbar.LENGTH_LONG).show();
             mLoadingBar.setVisibility(ProgressBar.GONE);
             return;
         }
@@ -129,8 +151,10 @@ public class RegisterActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
-                            Toast.makeText(RegisterActivity.this, "Your account has been created! We've sent you a link to verify your email.", Toast.LENGTH_LONG).show();
-                            RegisterActivity.this.finish();
+                            Snackbar.make(mMainView,
+                                    "Your account has been created! We've sent you a link to verify your email",
+                                    Snackbar.LENGTH_LONG)
+                                        .show();RegisterActivity.this.finish();
                         } else {
                             Log.d(LOG_TAG, "createUserWithEmail: failure");
                             registerError.setText(R.string.email_used_error);
@@ -157,7 +181,7 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         } else {
             fullnameError.setText("");
-            Log.d(LOG_TAG, admissibleRegistration ? "fullname: yes" : "fullname: no");
+            Log.d(LOG_TAG, mAdmissibleRegistration ? "fullname: yes" : "fullname: no");
         }
 
         if (email.isEmpty()) {
@@ -170,7 +194,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
         else {
             emailError.setText("");
-            Log.d(LOG_TAG, admissibleRegistration ? "email: yes" : "email: no");
+            Log.d(LOG_TAG, mAdmissibleRegistration ? "email: yes" : "email: no");
         }
 
         if (password.isEmpty()) {
@@ -187,7 +211,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
         else {
             passwordError.setText("");
-            Log.d(LOG_TAG, admissibleRegistration ? "password: yes" : "password: no");
+            Log.d(LOG_TAG, mAdmissibleRegistration ? "password: yes" : "password: no");
         }
 
         if (!confirmation.equals(password)) {
@@ -196,7 +220,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
         else {
             passwordError.setText("");
-            Log.d(LOG_TAG, admissibleRegistration ? "confirm: yes" : "confirm: no");
+            Log.d(LOG_TAG, mAdmissibleRegistration ? "confirm: yes" : "confirm: no");
         }
         return true;
     }

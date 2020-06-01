@@ -1,0 +1,130 @@
+﻿9
+1 5
+#Name>Which of the following names have been mentioned up till now?
+:Joe
+:Freddy
+:Al
+#Name>Which of the following names have been mentioned up till now?
+:Alex
+:Kevin
+:Derek
+#Name>Which of the following names have been mentioned up till now?
+:Ana
+:Micheal
+:Roger
+#Name>Which of the following names have been mentioned up till now?
+:Roger
+:Bob
+:Ali
+#Action>What was Al going to do?
+:Take Mum and Bob on Sunday
+:Watch a movie
+:Sing a song
+2 3
+#Action>What were Al and Kevin doing?
+:Singing and dancing
+:Running and shouting
+:Walking and talking
+#Phrase>What did Al's Mum say?
+:"Human genesis"
+:"Weed Psychosis"
+:"Cell Necrosis"
+#Name>What was the weed called?
+:'Father'
+:'Root'
+:'Mothership'
+3 5
+#Phrase>What did Al and Kevin hear?
+:'Croickee'
+:'Oh my god!'
+:'Bloody Hell'
+#Action>What was Al's Dad doing?
+:He was sitting
+:He was standing
+:He was kneeling
+#Place>What was the lawn said to be like?
+:Big, round and red
+:Big, square and red
+:Small, square and green
+#Place>What was the lawn said to be covered with?
+:Trees
+:Weeds
+:Bushes
+#Place>What was the lawn said to look like?
+:The Eiffel Tower
+:The Pyramids of Giza
+:The Colosseum 
+4 5
+#Question>What did Kevin ask?
+:Can't you hit the lawn mower?
+:Can't you drive the car?
+:Can't you use the weed-killer?
+#Name>Which of the following names have been mentioned up till now?
+:Mr. Roger
+:Mr. Josh
+:Mr. P
+#Action>What did Ana and Al do?
+:Went down to the Pub
+:Went to the mall
+:Went to the library
+#Action>What did Ana do?
+:Ana delivered a report
+:Ana made a drink
+:Ana threw a pencil
+#Name>Which of the following names have been mentioned up till now?
+:Stephanie
+:Beatriz
+:Alexander
+5 3
+#Action>What did Al and Ana do?
+:They sang a song
+:They drank a soft drink
+:They tried their pitch
+#Weather>What did the weather turn into?
+:A cold snow
+:A hot breeze
+:A summer storm
+#Time>When did Al wake up?
+:Morning
+:Mid-day
+:Mid-morning
+6 4
+#Action>What did Al do?
+:Opened the window
+:Closed the blind
+:Opened the door
+#Action>What was Al's Dad doing?
+:Sitting on a chair
+:Standing in the room
+:Sitting on the sofa
+#Place>What was the lawn like?
+:Tropical rainforest
+:Tropical desert
+:Tropical jungle
+#Action>What did Ana do?
+:She went outside for her mail
+:She went downstairs for her shawl
+:She went upstairs for her phone
+7 3
+#Action>What did Kevin's Pal do?
+:Took his jacket off and cocked his fist
+:Took his headphones off and shook his head
+:Took his cap off and stomped his feet
+#Name>Which of the following people were mentioned?
+:A teacher
+:A librarian
+:A professor
+#Action>What did the professor do?
+:Laughed happily
+:Cried sadly
+:Smiled approvingly
+8 1
+#Food>Which was stated?
+:Eggs
+:Bread
+:Pizza
+9 1
+#Place>What was the lawn covered with?
+:Water
+:Dust
+:Snow
