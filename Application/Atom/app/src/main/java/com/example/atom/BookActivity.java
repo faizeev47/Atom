@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.atom.Headset.IntentFilterFactory;
 import com.example.atom.Headset.StandardHeadsetReceiver;
 import com.example.atom.Library.Book;
-import com.example.atom.Library.BookListAdapter;
+import com.example.atom.Adapters.BookListAdapter;
 import com.example.atom.Library.BookViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -64,7 +64,7 @@ public class BookActivity extends AppCompatActivity {
         });
 
         RecyclerView recyclerView = findViewById(R.id.books_recyclerview);
-        final BookListAdapter adapter = new BookListAdapter(this, getIntent().hasExtra(ConnectionActivity.EXTRA_CONNECTION_STATUS));
+        final BookListAdapter adapter = new BookListAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -75,6 +75,7 @@ public class BookActivity extends AppCompatActivity {
                 adapter.setBooks(books);
             }
         });
+
 
         ItemTouchHelper touchHelper = new ItemTouchHelper(
                 new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -140,9 +141,6 @@ public class BookActivity extends AppCompatActivity {
                     intent.putExtra(EXTRA_BOOK_NAME, bookName);
                     intent.putExtra(EXTRA_BOOK_PAGE_NUMBER, 0);
                     intent.putExtra(EXTRA_BOOK_OPEN_NAME_SELECTION, "yes");
-                    if (getIntent().hasExtra(ConnectionActivity.EXTRA_CONNECTION_STATUS)) {
-                        intent.putExtra(ConnectionActivity.EXTRA_CONNECTION_STATUS, "Connected");
-                    }
                     startActivity(intent);
                 }
             }

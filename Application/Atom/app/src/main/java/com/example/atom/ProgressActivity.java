@@ -4,53 +4,44 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.example.atom.Adapters.SessionListAdapter;
 import com.example.atom.Headset.IntentFilterFactory;
 import com.example.atom.Headset.StandardHeadsetReceiver;
 import com.example.atom.Utilities.Utils;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.charts.RadarChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.MarkerView;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.data.RadarData;
-import com.github.mikephil.charting.data.RadarDataSet;
-import com.github.mikephil.charting.data.RadarEntry;
-import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
-import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -81,7 +72,9 @@ import static com.example.atom.Utilities.FirebaseUtils.SESSION_SCORE;
 import static com.example.atom.Utilities.FirebaseUtils.SESSION_TIME;
 import static com.example.atom.Utilities.FirebaseUtils.USER_REPORTS;
 import static com.example.atom.Utilities.Utils.connectionActive;
+import static com.example.atom.Utilities.Utils.fadeAppearViewObject;
 import static com.example.atom.Utilities.Utils.getFormattedTime;
+import static com.example.atom.Utilities.Utils.getTimeOfDayDrawableIndex;
 import static com.example.atom.Utilities.Utils.getTimeWithPeriod;
 
 public class ProgressActivity extends AppCompatActivity {
@@ -91,15 +84,16 @@ public class ProgressActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference mDatabaseReference = mFirebaseDatabase.getReference();
 
+    private RecyclerView mSessionsList;
+
     private static Typeface PRODUCT_SANS_TYPEFACE;
     private static Typeface PRODUCT_SANS_BOLD_TYPEFACE;
     private GregorianCalendar mCalender;
     private String mUserId;
+    final List<Long> timestamps = new ArrayList<>();
 
     private LocalBroadcastManager mLocalBroadcastManager;
     private StandardHeadsetReceiver mStandardReceiver;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,32 +115,56 @@ public class ProgressActivity extends AppCompatActivity {
         PRODUCT_SANS_BOLD_TYPEFACE = ResourcesCompat.getFont(getApplicationContext(), R.font.product_sans_bold);
 
         // Initialize UI components
-        final View mMainView = findViewById(R.id.progress_view);
+        final ScrollView mMainView = findViewById(R.id.progress_main_view);
         final ProgressBar loadingBar = findViewById(R.id.progress_loadingBar);
-        final RelativeLayout progressChartParent = findViewById(R.id.progress_attention_chart_parent);
+        final LinearLayout progressChartParent = findViewById(R.id.progress_attention_chart_parent);
         final LinearLayout noRecordsContainer = findViewById(R.id.progress_no_records_container);
         final LinearLayout recordsContainer = findViewById(R.id.progress_records_container);
+        mSessionsList = findViewById(R.id.progress_sessions_list);
+
+        // Indicate user about no session selected
+        TextView selectedSessionHeading = findViewById(R.id.progress_selected_session_heading);
+        selectedSessionHeading.setText(getResources().getString(R.string.no_session_selected_heading));
+        LinearLayout selectedSessionDataContainer = findViewById(R.id.progress_selected_session_container);
+        selectedSessionDataContainer.setVisibility(View.GONE);
+
+        // Session list formatting and data acquisition and handling
+        TypedArray partsImageResources = getResources().obtainTypedArray(R.array.parts_of_day);
+        final SessionListAdapter sessionListAdapter = new SessionListAdapter(mSessionsList,
+                partsImageResources,
+                selectedSessionHeading,
+                selectedSessionDataContainer,
+                mMainView);
+        mSessionsList.setAdapter(sessionListAdapter);
+        GridLayoutManager manager = new GridLayoutManager(this, 2);
+        manager.setSmoothScrollbarEnabled(true);
+        mSessionsList.setLayoutManager(manager);
+
 
         loadingBar.setVisibility(View.VISIBLE);
         noRecordsContainer.setVisibility(View.GONE);
         recordsContainer.setVisibility(View.GONE);
 
         if (!connectionActive(this)) {
+            noRecordsContainer.setAlpha(0f);
             noRecordsContainer.setVisibility(View.VISIBLE);
+            noRecordsContainer
+                    .animate()
+                    .alpha(1f)
+                    .setDuration(1000);
             Snackbar.make(mMainView,
                     "Please connect to the internet to get your progress!",
                     Snackbar.LENGTH_LONG).show();
             loadingBar.setVisibility(View.GONE);
         } else {
-            final List<Long> timestamps = new ArrayList<>();
             mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    boolean noData = true;
+                    boolean missingData = true;
                     if (dataSnapshot.exists()) {
                         DataSnapshot userReference = dataSnapshot.child(USER_REPORTS).child(mUserId);
                         if (userReference.exists()) {
-
+                            // Display the preferred reading period from user's median activity hour
                             if (userReference.child(MEDIAN_ACTIVITY).exists() &&
                                     userReference.child(MEDIAN_ACTIVITY).getValue() != null) {
                                 int medianActivity = Integer.parseInt(
@@ -164,14 +182,15 @@ public class ProgressActivity extends AppCompatActivity {
                                 String text = String.format(Locale.ENGLISH, "%02d:00 %s - %02d:00 %s",
                                         lowerBound, periodLower, upperBound, periodUpper);
                                 
-                                Drawable partOfDayDrawable = getTimeOfDayDrawable(medianActivity);
+                                Drawable partOfDayDrawable = partsImageResources.getDrawable(getTimeOfDayDrawableIndex(medianActivity));
                                 ((TextView)findViewById(R.id.progress_preferred_reading_hours))
                                         .setText(text);
                                 ((ImageView)findViewById(R.id.progress_preferred_reading_hours_icon))
                                         .setImageDrawable(partOfDayDrawable);
-                                noData = false;
+                                missingData = false;
                             }
 
+                            // Display user's highest activity hour and book
                             if (userReference.child(HIGHEST_ACTIVITY).exists() &&
                                     userReference.child(HIGHEST_ACTIVITY).getValue() != null) {
                                 int highestActivity = Integer.parseInt(
@@ -179,9 +198,8 @@ public class ProgressActivity extends AppCompatActivity {
                                                 .child(HIGHEST_ACTIVITY).getValue().toString());
                                 ((TextView)findViewById(R.id.progress_highest_activity_hour))
                                         .setText(String.format(Locale.ENGLISH, "%02d:00", highestActivity));
-                                noData = false;
+                                missingData = false;
                             }
-
                             if (userReference.child(MOST_READ_BOOK).exists() &&
                                     userReference.child(MOST_READ_BOOK).getValue() != null) {
                                 String mostReadBook = userReference
@@ -191,12 +209,15 @@ public class ProgressActivity extends AppCompatActivity {
                                     ((TextView)findViewById(R.id.progress_most_read_book))
                                             .setText(mostReadBook);
                                 }
-                                noData = false;
+                                missingData = false;
                             }
 
+                            // Display user's most recent activity
                             if (userReference.child(LAST_READ).exists() &&
-                                    userReference.child(LAST_READ).child(BOOK_NAME).getValue() != null &&
-                                    userReference.child(LAST_READ).child(SESSION_TIME).getValue() != null) {
+                                    userReference.child(LAST_READ)
+                                            .child(BOOK_NAME).getValue() != null &&
+                                    userReference.child(LAST_READ)
+                                            .child(SESSION_TIME).getValue() != null) {
                                 String lastReadBook = userReference
                                         .child(LAST_READ)
                                         .child(BOOK_NAME).getValue().toString();
@@ -212,12 +233,14 @@ public class ProgressActivity extends AppCompatActivity {
                                     ((TextView)findViewById(R.id.progress_last_read_time))
                                             .setText(lastReadTime);
                                 }
-                                noData = false;
+                                missingData = false;
                             }
 
+                            // Display the daily distribution pie chart
                             if (userReference.child(READING_HOUR_DISTRIBUTION).exists()) {
                                 PieChart distributionChart = findViewById(R.id.progress_distribution_chart);
 
+                                // Prepare and collect the dataset for the chart
                                 List<PieEntry> hourEntries = new ArrayList<>();
                                 int totalRegistered = 0;
                                 for (DataSnapshot entry : userReference.child(READING_HOUR_DISTRIBUTION).getChildren()) {
@@ -231,62 +254,15 @@ public class ProgressActivity extends AppCompatActivity {
                                                         getTimeWithPeriod(hour)));
                                     }
                                 }
-
-                                PieDataSet dataSet = new PieDataSet(hourEntries, "Reading Percentage");
-                                dataSet.setColors(getResources().getIntArray(R.array.pie_colors));
-                                dataSet.setSliceSpace(3f);
-
-                                PieData data = new PieData(dataSet);
-                                data.setValueFormatter(new ReadingPercentFormatter(totalRegistered));
-                                data.setValueTextSize(13f);
-                                data.setValueTextColor(getColor(R.color.backDark));
-                                data.setValueTypeface(PRODUCT_SANS_BOLD_TYPEFACE);
-
-                                distributionChart.setData(data);
-                                distributionChart.setUsePercentValues(false);
-                                distributionChart.getDescription().setEnabled(false);
-                                distributionChart.setExtraOffsets(5, 10, 5, 5);
-
-                                distributionChart.setDragDecelerationFrictionCoef(0.95f);
-
-                                distributionChart.setDrawHoleEnabled(true);
-                                distributionChart.setHoleColor(getColor(R.color.colorSecondaryDark));
-
-                                distributionChart.setTransparentCircleColor(Color.BLACK);
-                                distributionChart.setTransparentCircleAlpha(110);
-
-                                distributionChart.setHoleRadius(50f);
-                                distributionChart.setTransparentCircleRadius(61f);
-
-                                distributionChart.setDrawCenterText(true);
-
-                                distributionChart.setRotationAngle(0);
-
-                                distributionChart.setRotationEnabled(true);
-                                distributionChart.setHighlightPerTapEnabled(true);
-
-                                distributionChart.setAlpha(0.75f);
-
-                                Legend l = distributionChart.getLegend();
-                                l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-                                l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-                                l.setOrientation(Legend.LegendOrientation.VERTICAL);
-                                l.setDrawInside(true);
-                                l.setXEntrySpace(7f);
-                                l.setYEntrySpace(0f);
-                                l.setYOffset(0f);
-                                l.setTypeface(PRODUCT_SANS_TYPEFACE);
-
-                                distributionChart.setEntryLabelColor(Color.WHITE);
-                                distributionChart.setEntryLabelTypeface(PRODUCT_SANS_TYPEFACE);
-                                distributionChart.setEntryLabelTextSize(12f);
+                                formatPieChart(distributionChart, hourEntries, totalRegistered);
 
                                 distributionChart.invalidate();
                                 distributionChart.animateY(1400, Easing.EaseInOutQuad);
                             }
 
+                            // Display the sessions chart and get the timestamps
                             if (userReference.child(SESSIONS).exists()) {
-                                noData = false;
+                                missingData = false;
                                 if (userReference.child(SESSIONS).getChildrenCount() > 1) {
                                     final HashMap<Long, Pair<String, Long>> sessionData = new HashMap<>();
                                     List<Entry> entries = new ArrayList<>();
@@ -309,48 +285,13 @@ public class ProgressActivity extends AppCompatActivity {
                                                                     session.child(SESSION_SCORE).getValue().toString())));
                                         }
                                     }
-                                    final LineChart chart = findViewById(R.id.progress_chart);
-                                    LineDataSet dataSet = new LineDataSet(entries, "sessions");
-                                    dataSet.setValueTextSize(10f);
-                                    dataSet.setColor(Color.DKGRAY);
-                                    dataSet.setLineWidth(3f);
-                                    dataSet.setCircleRadius(6f);
-                                    dataSet.setCircleColor(getColor(R.color.colorAccent));
-                                    dataSet.setColor(getColor(R.color.colorPrimary));
-                                    dataSet.setFillDrawable(getDrawable(R.drawable.gradient_accent));
-                                    dataSet.setDrawFilled(true);
-                                    dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 
-                                    XAxis xAxis = chart.getXAxis();
-                                    xAxis.setEnabled(false);
+                                    // Adding timestamps to the calendar  list
+                                    sessionListAdapter.setEntries(timestamps);
 
-                                    chart.getAxisRight().setEnabled(false);
-                                    YAxis yAxis = chart.getAxisLeft();
-                                    yAxis.setTypeface(Typeface.MONOSPACE);
-
-                                    final LineData lineData =  new LineData(dataSet);
-                                    chart.getDescription().setEnabled(false);
-                                    mMainView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-                                        @Override
-                                        public void onScrollChanged() {
-                                            Rect bounds = new Rect();
-                                            progressChartParent.getHitRect(bounds);
-
-                                            Rect scrollBounds = new Rect();
-                                            mMainView.getDrawingRect(scrollBounds);
-
-                                            int chartOrdinate = (bounds.top +
-                                                    ((TextView)findViewById(R.id.progress_score_heading)).getHeight()
-                                                    + (progressChartParent.getHeight() / 2));
-
-                                            if (chartOrdinate <= scrollBounds.bottom) {
-                                                chart.setData(lineData);
-                                                chart.invalidate();
-                                                chart.animateY(1400, Easing.EaseInOutQuad);
-                                                mMainView.getViewTreeObserver().removeOnScrollChangedListener(this);
-                                            }
-                                        }
-                                    });
+                                    final LineChart chart = findViewById(R.id.progress_cumulative_chart);
+                                    formatAttentionChart(chart,
+                                            entries, mMainView, progressChartParent);
 
                                     final SessionMarker markerView = new SessionMarker(chart.getContext(),
                                             R.layout.layout_marker,
@@ -395,15 +336,14 @@ public class ProgressActivity extends AppCompatActivity {
                                 }
 
                             }
-
                         }
                     }
 
                     loadingBar.setVisibility(View.GONE);
-                    if (noData) {
-                        noRecordsContainer.setVisibility(View.VISIBLE);
+                    if (missingData) {
+                        fadeAppearViewObject(noRecordsContainer, 1000);
                     } else {
-                        recordsContainer.setVisibility(View.VISIBLE);
+                        fadeAppearViewObject(recordsContainer, 1000);
                     }
                 }
 
@@ -429,18 +369,6 @@ public class ProgressActivity extends AppCompatActivity {
         mLocalBroadcastManager.registerReceiver(mStandardReceiver,
                 IntentFilterFactory.createStandardFilter());
     }
-    
-    public Drawable getTimeOfDayDrawable(int medianActivityHour) {
-        if (medianActivityHour >= 5 && medianActivityHour < 9) {
-            return getDrawable(R.drawable.ic_time_sunrise);
-        } else if (medianActivityHour >= 9 && medianActivityHour < 16) {
-            return getDrawable(R.drawable.ic_time_day);
-        } else if (medianActivityHour >= 16 && medianActivityHour < 18) {
-            return getDrawable(R.drawable.ic_time_sunset);
-        } else {
-            return getDrawable(R.drawable.ic_time_night);
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -452,15 +380,121 @@ public class ProgressActivity extends AppCompatActivity {
         finish();
     }
 
-//    private class MyXAxisFormatter extends ValueFormatter {
-////        @Override
-////        public String getAxisLabel(float value, AxisBase axis) {
-////            SimpleDateFormat curFormater = new SimpleDateFormat("dd/MM/yyyy");
-////            SimpleDateFormat timeFormater = new SimpleDateFormat("hh:mm:ss");
-////            Date date = new Date((long)value);
-////            return curFormater.format(date) + "\n\r" + timeFormater.format(date);
-////        }
-////    }
+    public void formatPieChart(PieChart distributionChart,
+                               List<PieEntry> hourEntries, int totalRegistered) {
+        PieDataSet dataSet = new PieDataSet(hourEntries, "Reading Percentage");
+        dataSet.setColors(getResources().getIntArray(R.array.pie_colors));
+        dataSet.setSliceSpace(3f);
+
+        PieData data = new PieData(dataSet);
+        data.setValueFormatter(new ReadingPercentFormatter(totalRegistered));
+        data.setValueTextSize(13f);
+        data.setValueTextColor(getColor(R.color.backDark));
+        data.setValueTypeface(PRODUCT_SANS_BOLD_TYPEFACE);
+
+        distributionChart.setData(data);
+        distributionChart.setUsePercentValues(false);
+        distributionChart.getDescription().setEnabled(false);
+        distributionChart.setExtraOffsets(5, 10, 5, 5);
+
+        distributionChart.setDragDecelerationFrictionCoef(0.95f);
+
+        distributionChart.setDrawHoleEnabled(true);
+        distributionChart.setHoleColor(getColor(R.color.colorSecondaryDark));
+
+        distributionChart.setTransparentCircleColor(Color.BLACK);
+        distributionChart.setTransparentCircleAlpha(110);
+
+        distributionChart.setHoleRadius(50f);
+        distributionChart.setTransparentCircleRadius(61f);
+
+        distributionChart.setDrawCenterText(true);
+
+        distributionChart.setRotationAngle(0);
+
+        distributionChart.setRotationEnabled(true);
+        distributionChart.setHighlightPerTapEnabled(true);
+
+        distributionChart.setAlpha(0.75f);
+
+        Legend l = distributionChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setDrawInside(true);
+        l.setXEntrySpace(7f);
+        l.setYEntrySpace(0f);
+        l.setYOffset(0f);
+        l.setTypeface(PRODUCT_SANS_TYPEFACE);
+
+        distributionChart.setEntryLabelColor(Color.WHITE);
+        distributionChart.setEntryLabelTypeface(PRODUCT_SANS_TYPEFACE);
+        distributionChart.setEntryLabelTextSize(12f);
+    }
+
+    public void formatAttentionChart(LineChart chart, List<Entry> entries,
+                                     ScrollView mMainView, LinearLayout progressChartParent) {
+        // Configure and enable chart settings
+        chart.getDescription().setEnabled(true);
+        chart.getDescription().setText("AttentionGraph");
+
+        chart.setTouchEnabled(true);
+        chart.setDragEnabled(true);
+        chart.setScaleEnabled(true);
+        chart.setPinchZoom(true);
+        chart.setBackgroundColor(getColor(R.color.colorSecondary));
+
+        // Prepare the empty data set
+        LineDataSet dataSet = new LineDataSet(entries, "sessions");
+        dataSet.setValueTextSize(10f);
+        dataSet.setColor(Color.DKGRAY);
+        dataSet.setLineWidth(3f);
+        dataSet.setCircleRadius(6f);
+        dataSet.setValueTypeface(PRODUCT_SANS_TYPEFACE);
+        dataSet.setCircleColor(getColor(R.color.colorAccent));
+        dataSet.setColor(getColor(R.color.colorPrimary));
+        dataSet.setFillDrawable(getDrawable(R.drawable.gradient_accent));
+        dataSet.setDrawFilled(true);
+        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+
+        chart.getLegend().setEnabled(false);
+
+        // Configure the axes
+        chart.getXAxis().setEnabled(false);
+
+        YAxis leftAxis = chart.getAxisLeft();
+        leftAxis.setTypeface(PRODUCT_SANS_TYPEFACE);
+        leftAxis.setTextColor(getColor(R.color.colorTertiary));
+        leftAxis.setAxisMaximum(100f);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setDrawGridLines(true);
+
+        chart.getAxisRight().setEnabled(false);
+
+        final LineData lineData =  new LineData(dataSet);
+        chart.getDescription().setEnabled(false);
+        mMainView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                Rect bounds = new Rect();
+                progressChartParent.getHitRect(bounds);
+
+                Rect scrollBounds = new Rect();
+                mMainView.getDrawingRect(scrollBounds);
+
+                int chartOrdinate = (bounds.top +
+                        ((TextView)findViewById(R.id.progress_score_heading)).getHeight()
+                        + (progressChartParent.getHeight() / 2));
+
+                if (chartOrdinate <= scrollBounds.bottom) {
+                    chart.setData(lineData);
+                    chart.invalidate();
+                    chart.animateY(1400, Easing.EaseInOutQuad);
+                    mMainView.getViewTreeObserver().removeOnScrollChangedListener(this);
+                }
+            }
+        });
+    }
 
     private class ReadingPercentFormatter extends ValueFormatter {
         private int totalRegistered;

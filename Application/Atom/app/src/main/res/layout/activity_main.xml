@@ -34,23 +34,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_account"
-        android:onClick="openAccount"
-        style="@style/button_long" />
+        android:padding="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:onClick="openAccount" />
 
     <Button
         android:id="@+id/main_progress_button"
-        style="@style/button_long"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="openProgress"
+        android:padding="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/button_progress" />
 
     <Button
         android:id="@+id/main_headset_button"
-        style="@style/button_long"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="openConnection"
+        android:padding="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/button_headset" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

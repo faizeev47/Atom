@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -20,10 +21,6 @@ import com.example.atom.Headset.StandardHeadsetReceiver;
 import com.example.atom.Utilities.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.TimeZone;
-
-import static com.example.atom.ConnectionActivity.EXTRA_CONNECTION_STATUS;
 
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.class.getSimpleName() + " Logging";

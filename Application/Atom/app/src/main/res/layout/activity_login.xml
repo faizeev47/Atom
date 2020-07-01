@@ -14,8 +14,8 @@
 
     <ImageView
         android:id="@+id/login_image"
-        android:layout_width="122dp"
-        android:layout_height="237dp"
+        android:layout_width="137dp"
+        android:layout_height="199dp"
         android:contentDescription="@string/atom_image_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -27,12 +27,13 @@
         android:id="@+id/login_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="24dp"
         android:text="@string/atom_heading"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textSize="50sp"
         app:layout_constraintBottom_toBottomOf="@+id/login_image"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
@@ -44,6 +45,7 @@
         android:layout_marginEnd="24dp"
         android:gravity="center_horizontal"
         android:hint="@string/prompt_email"
+        android:importantForAutofill="no"
         android:inputType="textEmailAddress"
         android:nextFocusForward="@id/login_password"
         android:selectAllOnFocus="true"
@@ -92,29 +94,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_password" />
 
-    <ProgressBar
-        android:id="@+id/login_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_oauth_buttons" />
-
-
-    <TextView
-        android:id="@+id/login_error"
-        style="@style/error_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_password_error" />
 
     <LinearLayout
         android:id="@+id/login_buttons"
@@ -148,6 +127,31 @@
             android:text="@string/action_create_account" />
     </LinearLayout>
 
+
+    <TextView
+        android:id="@+id/login_error"
+        style="@style/error_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_buttons" />
+
+    <ProgressBar
+        android:id="@+id/login_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_error" />
+
+
     <Button
         android:id="@+id/login_forgot_password"
         android:layout_width="wrap_content"
@@ -159,14 +163,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_buttons" />
+        app:layout_constraintTop_toBottomOf="@+id/login_loading" />
 
 
     <TextView
         android:id="@+id/login_oath_options"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:text="Other sign in options:"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintEnd_toEndOf="parent"
@@ -198,9 +201,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackground"
+            android:onClick="signInWithGoogle"
             android:padding="8dp"
             android:src="@drawable/ic_google_logo"
-            android:onClick="signInWithGoogle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/login_facebook_login_button"
             app:layout_constraintHorizontal_bias="0.5"
@@ -212,9 +215,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackground"
+            android:onClick="signInWithFacebook"
             android:padding="8dp"
             android:src="@drawable/ic_facebook_logo"
-            android:onClick="signInWithFacebook"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

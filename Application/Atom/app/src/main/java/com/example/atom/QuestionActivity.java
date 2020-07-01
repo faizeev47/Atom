@@ -84,6 +84,7 @@ public class QuestionActivity extends AppCompatActivity {
         params.setMargins(10, 10, 10, 10);
         radioButton.setText(option);
         radioButton.setLayoutParams(params);
+        radioButton.setTextColor(getColor(R.color.colorPrimary));
         return radioButton;
     }
 

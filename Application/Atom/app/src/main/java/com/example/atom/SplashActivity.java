@@ -25,22 +25,11 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 ImageView splashImage = findViewById(R.id.splash_image);
-                splashImage.setVisibility(View.INVISIBLE);
-                Animation fadeIn = new AlphaAnimation(0, 1);
-                fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
-                fadeIn.setStartOffset(2000);
-                fadeIn.setDuration(3000);
-
-                Animation fadeOut = new AlphaAnimation(1, 0);
-                fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
-                fadeOut.setStartOffset(3000);
-                fadeOut.setDuration(2000);
-
-                AnimationSet animation = new AnimationSet(false); //change to false
-                animation.addAnimation(fadeIn);
-                animation.addAnimation(fadeOut);
-                splashImage.setAnimation(animation);
-                splashImage.animate();
+                splashImage.setAlpha(0f);
+                splashImage.animate()
+                        .alpha(0.9f)
+                        .rotation(720f)
+                        .setDuration(4000);
             }
         });
         new Handler().postDelayed(new Runnable() {
@@ -51,6 +40,6 @@ public class SplashActivity extends AppCompatActivity {
                 SplashActivity.this.startActivity(intent);
                 SplashActivity.this.finish();
             }
-        }, 500);
+        }, 5000);
     }
 }

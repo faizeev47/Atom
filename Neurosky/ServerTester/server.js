@@ -1,10 +1,17 @@
 const net = require("net");
 const WebSocket = require("ws");
+const admin = require("firebase-admin");
+const serviceAccount = require("/mnt/c/Users/Faizan/atom-e0e04-firebase-adminsdk-vh4im-f38cb02a0f.json");
 
 const DATA_PORTS = {"THINKGEAR": 13854,
                     "MOCKSERVER": 8000};
 
 const DATASTREAM_PORT = DATA_PORTS["MOCKSERVER"];
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://atom-e0e04.firebaseio.com"
+});
 
 // Specifications for the server
 const SERVER_MAC_ADDRESS = "60:f6:77:8b:86:20";
@@ -21,6 +28,13 @@ Object.keys(ifaces).forEach(function (ifname) {
         hostname = iface.address;
     }
   });
+});
+
+var db = admin.database();
+var ref = db.ref("/");
+ref.child("hostOptions").set({
+    hostname: hostname,
+    port: SERVER_PORT
 });
 
 var initiateStreamMessage ='{"enableRawOutput": false,"format": "Json"}';

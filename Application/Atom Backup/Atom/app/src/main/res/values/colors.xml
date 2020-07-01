@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#34495E</color>
+    <color name="colorPrimaryDark">#2c3e50</color>
+    <color name="colorSecondary">#BDC3C7</color>
+    <color name="colorSecondaryDark">#95a5a6</color>
+    <color name="colorTertiary">#424242</color>
+    <color name="colorAccent">#2980B9</color>
+
+    <color name="backLight">#2c3e50</color>
+    <color name="backDark">#ecf0f1</color>
+
+    <color name="button_long">#2c3e50</color>
+    <color name="button_long_pressed">#27648D</color>
+
+    <color name="success">#27ae60</color>
+    <color name="warning">#c0392b</color>
+
+    <color name="transparent">#80000000</color>
+</resources>

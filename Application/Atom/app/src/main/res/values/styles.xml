@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -10,7 +10,7 @@
         <item name="android:fontFamily">@font/product_sans_regular</item>
     </style>
 
-    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Dialog">
+    <style name="AppTheme.Dialog" parent="Theme.MaterialComponents.Dialog">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:fontFamily">@font/product_sans_regular</item>
@@ -28,26 +28,14 @@
         <item name="android:alpha">0.6</item>
     </style>
 
-    <style name="button_long">
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Large</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:layout_marginLeft">10dp</item>
-        <item name="android:layout_marginStart">10dp</item>
-        <item name="android:layout_marginRight">10dp</item>
-        <item name="android:layout_marginEnd">10dp</item>
-        <item name="android:background">@drawable/btn_long</item>
-        <item name="android:foreground">?selectableItemBackground</item>
-        <item name="android:textColor">@drawable/btn_long</item>
-    </style>
-
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="Theme.MaterialComponents.Light.DarkActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="Theme.MaterialComponents.Light" />
 
     <style name="button_circular">
         <item name="android:layout_marginTop">8dp</item>

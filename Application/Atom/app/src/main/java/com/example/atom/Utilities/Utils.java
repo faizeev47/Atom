@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import androidx.core.content.res.ResourcesCompat;
 
@@ -29,6 +31,35 @@ public class Utils {
     private DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     private static final String LOG_TAG = Utils.class.getSimpleName() + " Logging:";
+
+    public static void fadeAppearViewObject(View view, long duration) {
+        view.setAlpha(0f);
+        view.setVisibility(View.VISIBLE);
+        view.animate()
+                .alpha(1f)
+                .setDuration(duration);
+    }
+
+    public static void fadeAppearTextView(TextView view, String text, long duration) {
+        view.setAlpha(0f);
+        view.setText(text);
+        view.setVisibility(View.VISIBLE);
+        view.animate()
+                .alpha(1f)
+                .setDuration(duration);
+    }
+
+    public static int getTimeOfDayDrawableIndex(int hourOfDay) {
+        if (hourOfDay >= 5 && hourOfDay < 9) {
+            return 0;
+        } else if (hourOfDay >= 9 && hourOfDay < 16) {
+            return 1;
+        } else if (hourOfDay >= 16 && hourOfDay < 18) {
+            return 2;
+        } else {
+            return 3;
+        }
+    }
 
 
     public static String toFirstCaps(String string) {

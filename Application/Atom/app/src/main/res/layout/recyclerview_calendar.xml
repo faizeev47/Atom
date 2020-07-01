@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:foreground="?selectableItemBackground">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#0FFFFFFF">
+        <TextView
+            android:id="@+id/_session_entry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Wednesday 16 December 2020"
+            android:padding="16dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+        <TextView
+            android:id="@+id/_session_timestamp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right|end"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorSecondaryDark"
+            android:padding="8dp"
+            android:text="03:00pm"/>
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/_session_daytime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:src="@drawable/ic_time_day"
+        android:alpha="0.3"
+        android:layout_gravity="right|end"/>
+
+
+</androidx.cardview.widget.CardView>

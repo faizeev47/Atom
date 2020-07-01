@@ -1,6 +1,10 @@
 package com.example.atom.Utilities;
 
 public class FirebaseUtils {
+    public static final String HOST_OPTIONS = "hostOptions";
+    public static final String HOSTNAME = "hostname";
+    public static final String PORT = "port";
+
     public static final String USER_REPORTS = "userReports";
     public static final String MEDIAN_ACTIVITY = "medianActivity";
     public static final String HIGHEST_ACTIVITY = "highestActivity";

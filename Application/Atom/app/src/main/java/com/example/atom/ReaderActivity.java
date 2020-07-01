@@ -83,7 +83,9 @@ public class ReaderActivity extends AppCompatActivity {
     private long mReadingTimeSeconds;
     private long mPauseTimeSeconds;
 
-    private GregorianCalendar mCalender;
+    private boolean mSequenceResponseAwaiting;
+
+    private final GregorianCalendar mCalendar = new GregorianCalendar(TimeZone.getDefault());
     private int mReadingHour;
     private int[] mReadingDistribution = new int[24];
 
@@ -134,7 +136,6 @@ public class ReaderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader);
 
-
         // Require user to be logged in
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -149,6 +150,8 @@ public class ReaderActivity extends AppCompatActivity {
 
         // Initialize UI components
         mMainView = findViewById(R.id.reader_view);
+
+        mSequenceResponseAwaiting = false;
 
         mHeadsetState = HeadsetState.DISCONNECTED;
 
@@ -291,16 +294,17 @@ public class ReaderActivity extends AppCompatActivity {
                 intent.putExtra(EXTRA_IS_FINAL, 1);
             }
             startActivityForResult(intent, ANSWER_REQUEST);
+        } else {
+            mSequenceResponseAwaiting = false;
         }
     }
 
     private void initializeSchemaStructure () {
         if (mHeadsetState == HeadsetState.CONNECTED) {
             if (connectionActive(this)) {
-                mCalender = new GregorianCalendar(TimeZone.getDefault());
                 mSessionStartClock = new Date();
-                mCalender.setTime(mSessionStartClock);
-                mReadingHour = mCalender.get(Calendar.HOUR_OF_DAY);
+                mCalendar.setTime(mSessionStartClock);
+                mReadingHour = mCalendar.get(Calendar.HOUR_OF_DAY);
 
                 mBookReadingHistory = 0;
                 for (int i = 0, l = mReadingDistribution.length; i < l; i++) {
@@ -390,8 +394,8 @@ public class ReaderActivity extends AppCompatActivity {
                 mMaximumAttention = attentionValue;
             }
 
-            mCalender.setTime(new Date());
-            mReadingHour =  mCalender.get(Calendar.HOUR_OF_DAY);
+            mCalendar.setTime(new Date());
+            mReadingHour =  mCalendar.get(Calendar.HOUR_OF_DAY);
             mReadingDistribution[mReadingHour]++;
         }
     }
@@ -499,12 +503,11 @@ public class ReaderActivity extends AppCompatActivity {
                         break;
                     case SocketService.ACTION_RETURN_ATTENTION_VALUE:
                         int attention = intent.getIntExtra(SocketService.EXTRA_ATTENTION_VALUE, -1);
-//                        Log.d(LOG_TAG,
-//                                "attention: " + attention);
-                        if (attention == 0) {
+                        if (attention == 0 && !mSequenceResponseAwaiting) {
                             notifyNotReading(ReaderActivity.this, mNotifyManager);
                             prepareQuestions(mCurrentBook.getPageNumber() + 1);
                             launchQuestionSequence();
+                            mSequenceResponseAwaiting = true;
                         } else {
                             mNotifyManager.cancel(NotificationUtils.NOT_READING_NOTIFICATION);
                         }

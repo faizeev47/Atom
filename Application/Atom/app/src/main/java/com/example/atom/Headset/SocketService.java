@@ -66,7 +66,7 @@ public class SocketService extends Service {
     private static final int GRADIENT_THRESHOLD = 10;
 
     // Change to match to the IP of the server
-    private static final String SERVER_URL = "ws://192.168.100.9:8001";
+    public static String SERVER_URL = "ws://192.168.100.8:8001";
 
     private WebSocket mWebSocket;
     private NotificationManager mNotifyManager;
