@@ -22,15 +22,18 @@
     <string name="error_heading">Error!</string>
     <string name="progressive_attention_chart_heading">Progressive attention scores:</string>
     <string name="no_session_selected_heading">Select a session from the list below to display information about it</string>
+    <string name="no_sessions_available_heading">You have no current reading sessions</string>
     <string name="session_selected_heading">Your selected session:</string>
     <string name="reading_sessions_heading">Reading sessions:</string>
+    <string name="no_internet_heading">No internet connection!</string>
 
+    <string name="no_internet_subheading">Please connect to the internet to fetch your analytics</string>
     <string name="registration_subheading">Registration:</string>
     <string name="recover_password_subheading">Recover password:</string>
     <string name="account_subheading">Your Account:</string>
     <string name="book_subheading">Your books:</string>
     <string name="connection_subheading">Headset connection:</string>
-    <string name="attention_graph_subheading">This graph represents all the sessions over time and the percentage time you were attentive throughout</string>
+    <string name="cumulative_chart_subheading">This graph represents all the sessions over time and the percentage time you were attentive throughout</string>
     <string name="attention_time_subheading">Your attention throughout the session:</string>
     <string name="select_session_subheading">Scroll and select a session to display the attention-time graph</string>
 
@@ -55,6 +58,9 @@
     <string name="session_score_label">Session score:</string>
     <string name="time_seconds_label">Time (seconds)</string>
     <string name="session_over_time_label">Sessions over time</string>
+    <string name="attribute_missing_label">Please read some more to find out about this attribute</string>
+    <string name="graph_missing_label">Please read some more to get this graph</string>
+
 
     <string name="sample_session_no">Session 1:</string>
     <string name="sample_float_value">13.2424</string>
@@ -122,6 +128,9 @@
     <string name="fb_login_protocol_scheme">fb1590643554421325</string>
     <string name="switch_on">On</string>
     <string name="switch_off">Off</string>
+    <string name="daily_reading_distribution_heading">Daily reading distribution:</string>
+    <string name="time_format">hh:mm:ss</string>
+
     <string-array name="questions">
     <item name="page1_questions">
 #Name>Which of the following names have been mentioned up till now?>Joe:Freddy:Al>3

@@ -106,26 +106,29 @@
 
                     <TextView
                         android:id="@+id/progress_preferred_reading_hours"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/sample_time_interval"
-                        android:textColor="@color/button_long_pressed"
+                        android:text="@string/attribute_missing_label"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textColor="@color/button_long_pressed"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintEnd_toStartOf="@+id/progress_preferred_reading_hours_icon"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_height="0dp"
+                        android:layout_width="0dp"
+                        android:gravity="center"/>
 
                     <ImageView
                         android:id="@+id/progress_preferred_reading_hours_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end"
+                        android:contentDescription="@string/part_of_day_description"
                         android:foregroundGravity="right"
                         android:src="@drawable/ic_time_sunrise"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:contentDescription="@string/part_of_day_description" />
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 
@@ -138,25 +141,39 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="8dp">
 
                 <TextView
+                    android:id="@+id/progress_distribution_heading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="5dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="@color/colorTertiary"
-                    android:text="Daily reading distribution: " />
+                    android:text="@string/daily_reading_distribution_heading" />
 
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/progress_distribution_chart"
                     android:layout_width="match_parent"
                     android:layout_height="400dp"
                     android:layout_margin="20dp"
-                    android:padding="10dp" />
-            </RelativeLayout>
+                    android:layout_below="@id/progress_distribution_heading"
+                    android:padding="10dp"
+                    android:visibility="gone"/>
 
+                <TextView
+                    android:id="@+id/progress_distribution_missing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="@string/attribute_missing_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/button_long_pressed"
+                    android:layout_below="@id/progress_distribution_heading"/>
+            </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -168,26 +185,26 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foregroundGravity="center_vertical"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:padding="1dp">
+                android:padding="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-
-                    android:text="@string/most_read_time_label" />
+                    android:text="@string/most_read_time_label"/>
 
                 <TextView
                     android:id="@+id/progress_highest_activity_hour"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:padding="20dp"
-                    android:textColor="@color/button_long_pressed"
-                    android:text="@string/sample_timestamp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                    android:text="@string/attribute_missing_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/button_long_pressed"/>
+
             </LinearLayout>
 
             <View
@@ -200,10 +217,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foregroundGravity="center_vertical"
-                android:gravity="center"
                 android:orientation="horizontal"
-                android:padding="5dp">
+                android:gravity="center"
+                android:padding="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -212,15 +228,16 @@
                     android:text="@string/most_read_book_label" />
 
                 <TextView
-                    android:id="@+id/progress_most_read_book"
+                    android:id="@+id/progress_highest_activity_book"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="serif"
-                    android:padding="20dp"
+                    android:padding="8dp"
+                    android:gravity="center"
                     android:textColor="@color/button_long_pressed"
-                    android:text="@string/sample_book_name"
+                    android:text="@string/attribute_missing_label"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:typeface="serif" />
+                    android:typeface="serif"/>
             </LinearLayout>
 
             <View
@@ -233,10 +250,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foregroundGravity="center_vertical"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:padding="5dp">
+                android:padding="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -248,25 +264,27 @@
                     android:id="@+id/progress_last_read_book"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:fontFamily="serif"
-                    android:padding="20dp"
+                    android:padding="8dp"
                     android:textColor="@color/button_long_pressed"
-                    android:text="@string/sample_book_name"
+                    android:text="@string/attribute_missing_label"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:typeface="serif" />
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foregroundGravity="center_vertical"
                 android:gravity="center"
-                android:orientation="horizontal"
                 android:padding="5dp">
 
                 <TextView
+                    android:id="@+id/progress_last_read_time_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/progress_last_read_time"
+                    android:layout_below="@id/progress_last_read_time"
                     android:padding="5dp"
                     android:text="@string/last_read_time_label" />
 
@@ -274,12 +292,28 @@
                     android:id="@+id/progress_last_read_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="20dp"
+                    android:layout_toEndOf="@id/progress_last_read_time_label"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="8dp"
                     android:textColor="@color/button_long_pressed"
-                    android:text="@string/sample_time"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:text="@string/attribute_missing_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:typeface="serif" />
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/progress_time_format"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/time_format"
+                    android:layout_below="@id/progress_last_read_time"
+                    android:layout_alignStart="@id/progress_last_read_time"
+                    android:layout_alignEnd="@id/progress_last_read_time"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
 
 
             <View
@@ -289,16 +323,17 @@
                 android:background="?android:attr/listDivider"
                 android:foreground="@color/colorSecondaryDark" />
 
-            <LinearLayout
-                android:id="@+id/progress_attention_chart_parent"
+            <RelativeLayout
+                android:id="@+id/progress_cumulative_chart_parent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/progress_score_heading"
+                    android:id="@+id/progress_cumulative_chart_heading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
                     android:gravity="center"
                     android:padding="5dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -306,18 +341,22 @@
                     android:text="@string/progressive_attention_chart_heading" />
 
                 <TextView
-                    android:id="@+id/progress_score_subheading"
+                    android:id="@+id/progress_cumulative_chart_subheading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/progress_cumulative_chart_heading"
                     android:gravity="center"
                     android:padding="5dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textColor="@color/colorSecondaryDark"
-                    android:text="@string/attention_graph_subheading" />
+                    android:text="@string/graph_missing_label" />
 
                 <LinearLayout
+                    android:id="@+id/progress_cumulative_chart_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/progress_cumulative_chart_subheading"
+                    android:visibility="gone"
                     android:padding="8dp"
                     android:orientation="horizontal">
                     <com.example.atom.Widgets.VerticalTextView
@@ -344,7 +383,7 @@
                 </LinearLayout>
 
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -361,13 +400,14 @@
                 android:padding="16dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/colorTertiary"
-                android:text="@string/no_session_selected_heading" />
+                android:text="@string/no_sessions_available_heading" />
 
             <LinearLayout
                 android:id="@+id/progress_selected_session_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -490,10 +530,12 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/progress_sessions_list_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
