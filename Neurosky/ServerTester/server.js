@@ -6,7 +6,7 @@ const serviceAccount = require("/mnt/c/Users/Faizan/atom-e0e04-firebase-adminsdk
 const DATA_PORTS = {"THINKGEAR": 13854,
                     "MOCKSERVER": 8000};
 
-const DATASTREAM_PORT = DATA_PORTS["MOCKSERVER"];
+const DATASTREAM_PORT = DATA_PORTS["THINKGEAR"];
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
